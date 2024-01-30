@@ -25,7 +25,7 @@ export default {
 			case '/redirect':
 				return handleRedirect.fetch(request, env, ctx);
 
-			case '/proxy':
+			case '/':
 				return handleProxy.fetch(request, env, ctx);
 		}
 
