@@ -2,32 +2,33 @@ export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
 
-    const backendServers = [
-      "https://tanggalnya.com",
-      "https://tanggalnya.com",
-      // Add more backend servers if needed
-    ];
+		const backendServers = [
+			'https://tanggalnya.com',
+			'https://pi.ardinusawan.com',
+		];
 
-    // Generate a random index
-    const index = Math.floor(Math.random() * backendServers.length);
+		let index = Math.floor(Math.random() * backendServers.length);
 
-    // Choose backend in a round-robin fashion
-    const proxyUrl = backendServers[index];
-		const modify = url.searchParams.has('modify'); // check if a query param is set (?proxyUrl=...&modify)
+		let proxyUrl = backendServers[index];
+		let healthCheckResponse = await fetch(proxyUrl + '/ping'); // Perform health check
 
-		if (!proxyUrl) {
-			return new Response('Bad request: Missing `proxyUrl` query param', { status: 400 });
+		if (healthCheckResponse.ok) {
+			let res = await fetch(proxyUrl + url.pathname + url.search, request);
+
+			return res;
 		}
 
-		// make subrequests with the global `fetch()` function
-		let res = await fetch(proxyUrl, request);
+		for (let i = 1; i < backendServers.length; i++) {
+			index = (index + 1) % backendServers.length;
+			proxyUrl = backendServers[index];
+			healthCheckResponse = await fetch(proxyUrl + '/ping');
 
-		// optionally, modify the respone
-		if (modify) {
-			res = new Response(res.body, res);
-			res.headers.set('X-My-Header', 'My Header Value');
+			if (healthCheckResponse.ok) {
+				let res = await fetch(proxyUrl + url.pathname + url.search, request);
+				return res;
+			}
 		}
 
-		return res;
+		return new Response('No healthy backends available', { status: 500 });
 	},
 };
