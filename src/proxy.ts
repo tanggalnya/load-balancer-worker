@@ -3,7 +3,7 @@ export default {
 		const url = new URL(request.url);
 
 		const backendServers = [
-			'https://tanggalnya.com',
+			'https://www.tanggalnya.com',
 			'https://www1.tanggalnya.com',
 		];
 
