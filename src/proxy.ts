@@ -4,7 +4,7 @@ export default {
 
 		const backendServers = [
 			'https://tanggalnya.com',
-			'https://pi.ardinusawan.xyz',
+			'https://www1.tanggalnya.com',
 		];
 
 		let index = Math.floor(Math.random() * backendServers.length);
