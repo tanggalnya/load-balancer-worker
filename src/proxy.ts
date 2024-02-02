@@ -6,6 +6,7 @@ export default {
 			'https://www.tanggalnya.com',
 			'https://www1.tanggalnya.com',
 			'https://www2.tanggalnya.com',
+			'https://www3.tanggalnya.com',
 		];
 
 		let index = Math.floor(Math.random() * backendServers.length);
